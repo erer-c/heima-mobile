@@ -1,4 +1,8 @@
 // 注册引用vant组件
 import Vue from 'vue'
-import { Button } from 'vant'
+import { Button, NavBar, Field, Cell, CellGroup } from 'vant'
 Vue.use(Button)
+  .use(NavBar)
+  .use(Field)
+  .use(Cell)
+  .use(CellGroup)
