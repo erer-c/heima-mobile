@@ -4,7 +4,14 @@
     <van-cell-group>
       <van-field v-model="user.mobile" label="手机号" placeholder="请输入手机号" required />
       <van-field v-model="user.code" label="验证码" placeholder="请输入验证码" required>
-        <van-button slot="button" type="primary" size="small">获取验证码</van-button>
+        <van-count-down
+          v-if="isCountDownShow"
+          slot="button"
+          :time="1000*60"
+          format="ss s"
+          @finish="isCountDownShow = false"
+        ></van-count-down>
+        <van-button v-else slot="button" type="primary" size="small" @click="onSendSms">获取验证码</van-button>
       </van-field>
     </van-cell-group>
     <div class="loginBtn">
@@ -14,29 +21,45 @@
 </template>
 
 <script>
-import { login } from '@/api/user-login'
+import { login, sendSms } from '@/api/user-login'
 export default {
   data () {
     return {
       user: {
         mobile: '',
         code: ''
-      }
+      },
+      isCountDownShow: false // 是否显示倒计时
     }
   },
   methods: {
-    login () {
+    async onSendSms () {
+      const { mobile } = this.user
+      try {
+        this.isCountDownShow = true
+        await sendSms(mobile)
+      } catch (error) {
+        this.isCountDownShow = false
+        // console.log(error.response)
+        if (error.response.status === 429) {
+          return this.$toast('不能频繁操作!')
+        }
+        this.$toast('发送失败')
+      }
+    },
+    async login () {
       this.$toast.loading({
         duration: 0, // 持续展示
         message: '登录中...',
         forbidClick: true
       })
-      login(this.user).then(res => {
-        // alert(1)
+      try {
+        const res = await login(this.user)
+        console.log(res)
         this.$toast.success('登录成功！')
-      }).catch(() => {
+      } catch (error) {
         this.$toast.fail('手机号或验证码错误！')
-      })
+      }
     }
   }
 }
