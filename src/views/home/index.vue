@@ -1,8 +1,13 @@
 <template>
   <div class="home">
-    <van-nav-bar fixed></van-nav-bar>
+    <van-nav-bar fixed>
+      <van-button slot="title" @click="$router.push('/search')">
+        <van-icon color='#fff' name='search'></van-icon>
+        <span>搜索</span>
+      </van-button>
+    </van-nav-bar>
     <van-tabs v-model="active">
-      <van-icon slot="nav-right" name="wap-nav" @click="showPopup" />
+      <van-icon class="iconwap" slot="nav-right" name="wap-nav" @click="showPopup" />
       <van-popup
         position="bottom"
         close-icon-position="top-left"
@@ -74,12 +79,23 @@ export default {
     right: 0;
     z-index: 1;
   }
-  .van-icon {
+  .iconwap {
     position: fixed;
     right: 0px;
     height: 44px;
     line-height: 44px;
     background-color: #fff;
+  }
+  .van-button{
+    background-color: #5babfb;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+    border-radius: 15px;
+    border: 0;
+    margin-top: 7px;
+    color: #fff;
+    font-size: 12px;
   }
 }
 </style>

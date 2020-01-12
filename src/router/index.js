@@ -23,5 +23,8 @@ export default new VueRouter({
       path: 'my',
       component: () => import('@/views/my')
     }]
+  }, {
+    path: '/search',
+    component: () => import('@/views/search')
   }]
 })
