@@ -42,6 +42,7 @@
 
 <script>
 import { getAllChannels } from '@/api/channel'
+import { setItem } from '@/utils/storage'
 export default {
   name: 'channels',
   props: {
@@ -92,6 +93,12 @@ export default {
       const { data } = await getAllChannels()
       this.allChannel = data.data.channels
       // console.log(data)
+    }
+  },
+  // 监听频道数据发生改变
+  watch: {
+    channelList () {
+      setItem('userChannel', this.channelList)
     }
   },
   // 计算剩余频道=所有频道-用户频道

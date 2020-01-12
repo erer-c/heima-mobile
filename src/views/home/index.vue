@@ -29,6 +29,7 @@
 import { getUserChannels } from '@/api/user-login'
 import articleList from './components/article_list'
 import popup from './components/popup'
+import { getItem } from '@/utils/storage'
 export default {
   data () {
     return {
@@ -48,9 +49,14 @@ export default {
     },
     // 获取用户频道数据
     async loadUserChannels () {
-      const { data } = await getUserChannels()
-      // console.log(data)
-      this.channelList = data.data.channels
+      let my = getItem('userChannel')
+      if (my.length) {
+        this.channelList = my
+      } else {
+        const { data } = await getUserChannels()
+        // console.log(data)
+        this.channelList = data.data.channels
+      }
     }
   },
   created () {
