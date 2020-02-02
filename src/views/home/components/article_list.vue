@@ -1,7 +1,7 @@
 <template>
   <van-pull-refresh v-model="isLoading" success-text="刷新成功" @refresh="onRefresh">
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <van-cell v-for="item in list" :key="item.aut_id" :title="item.title" />
+      <van-cell v-for="(item,index) in list" :key="index" :title="item.title" />
     </van-list>
   </van-pull-refresh>
 </template>
@@ -33,7 +33,7 @@ export default {
       const { data } = await getArticleList({
         channel_id: this.channel.id,
         timestamp: Date.now(), // 获取当前最新的文章列表   时间戳
-        with_top: 1 // 是否包含制置顶
+        with_top: 1 // 是否包含置顶
       })
       // console.log(data)
       // 2,如果有最新数据，加载到顶部
@@ -54,6 +54,7 @@ export default {
       // 2 把请求到的数据添加到频道数据列表
       const results = data.data.results
       this.list.push(...results)
+      // console.log(this.list)
       // 加载状态结束
       this.loading = false
       // 数据全部加载完成

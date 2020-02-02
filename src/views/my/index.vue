@@ -64,14 +64,13 @@ export default {
     }
   },
   methods: {
-    onQuitLogin () {
-      this.$dialog.confirm({
+    async onQuitLogin () {
+      await this.$dialog.confirm({
         title: '提示',
         message: '退出当前头条账号，将不能同步收藏，发布评论和云端分享等'
-      }).then(() => {
-        // console.log(1)
-        this.$store.commit('setUser', null)
       })
+      // console.log(1)
+      this.$store.commit('setUser', null)
     },
     // 获取用户信息
     async GainUserInfo () {

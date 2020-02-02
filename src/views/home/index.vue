@@ -11,7 +11,7 @@
       <van-popup
         position="bottom"
         close-icon-position="top-left"
-        :style="{ height: '95%' }"
+        :style="{ height: '100%' }"
         closeable
         v-model="show"
       >
