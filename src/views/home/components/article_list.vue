@@ -1,7 +1,12 @@
 <template>
   <van-pull-refresh v-model="isLoading" success-text="刷新成功" @refresh="onRefresh">
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-      <van-cell v-for="(item,index) in list" :key="index" :title="item.title" />
+      <van-cell
+        v-for="(item,index) in list"
+        :key="index"
+        :title="item.title"
+        @click="$router.push('/article/' + item.art_id)"
+      />
     </van-list>
   </van-pull-refresh>
 </template>
@@ -69,7 +74,7 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.van-pull-refresh{
+.van-pull-refresh {
   margin-top: 90px;
   margin-bottom: 50px;
 }

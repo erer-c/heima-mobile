@@ -94,18 +94,8 @@ export default {
       const { data } = await getSuggestion(this.searchContent)
       // console.log(data)
       this.suggestion = data.data.options
-      // this.isResult = true
+      this.isResult = true
     }, 500)
-    // async onSearchInput () {
-    //   if (!this.searchContent) {
-    //     // 判断非空
-    //     return
-    //   }
-    //   const { data } = await getSuggestion(this.searchContent)
-    //   // console.log(data)
-    //   this.suggestion = data.data.options
-    //   // this.isResult = true
-    // }
   },
   watch: {
     searchHistory (newVal) {

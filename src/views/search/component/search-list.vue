@@ -1,11 +1,6 @@
 <template>
-  <van-list v-model="loading"
-  :finished="finished"
-  finished-text="没有更多了"
-  @load="onSearchResult">
-    <van-cell :title="item.title" v-for="(item,index) in list" :key="index">
-      <van-icon name="close"></van-icon>
-    </van-cell>
+  <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onSearchResult">
+    <van-cell :title="item.title" v-for="(item,index) in list" :key="index"></van-cell>
   </van-list>
 </template>
 
@@ -30,7 +25,7 @@ export default {
   },
   methods: {
     async onSearchResult () {
-    // 1,请求获取数据
+      // 1,请求获取数据
       const { data } = await getSearchResult({
         page: this.page,
         per_page: this.per_page,
@@ -46,8 +41,10 @@ export default {
       // 4，判断数据是否加载完成
       if (results.length) {
         this.page++ // 如果有数据，更新获取下一页数据
+        // console.log(1)
       } else {
-        this.finished = false // 如果没有数据，不再onload
+        this.finished = true // 如果没有数据，不再onload
+        // console.log(2)
       }
     }
   },

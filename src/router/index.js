@@ -22,10 +22,12 @@ export default new VueRouter({
     }, {
       path: 'my',
       component: () => import('@/views/my')
-    }, {
-      path: 'article/:articleId',
-      component: () => import('@/views/article')
     }]
+  }, {
+    path: '/article/:articleId',
+    component: () => import('@/views/article'),
+    // 将路由参数映射到组件的props中
+    props: true
   }, {
     path: '/search',
     component: () => import('@/views/search')
