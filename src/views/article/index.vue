@@ -25,11 +25,19 @@
             <span class="time">{{articleDetails.pubdate}}</span>
           </div>
         </div>
-        <van-button class="follow-btn" type="info" size="small" round>+ 关注</van-button>
+        <van-button
+          v-if="!$store.state.user||articleDetails.aut_id !== $store.state.user.userId"
+          class="follow-btn"
+          :type="articleDetails.is_followed?'default':'info'"
+          size="small"
+          round
+          :loading='isFollowLoading'
+          @click="onFollow"
+        >{{articleDetails.is_followed?'已关注':'+ 关注'}}</van-button>
       </div>
       <div class="markdown-body" v-html="articleDetails.content"></div>
     </div>
-     <!-- 页面加载失败提示 -->
+    <!-- 页面加载失败提示 -->
     <div v-else class="error">
       <img src="./no-network.png" alt="no-network" />
       <p class="text">亲，网络不给力哦~</p>
@@ -39,19 +47,33 @@
     <div class="footer">
       <van-button class="write-btn" type="default" round size="small">写评论</van-button>
       <van-icon class="comment-icon" name="comment-o" info="9" />
-      <van-icon color="orange" :name="articleDetails.is_collected ? 'star' : 'star-o'" @click="onCollect" />
-      <van-icon color="#e5645f" name="good-job" @click="onLikes" />
+      <van-icon
+        color="orange"
+        :name="articleDetails.is_collected ? 'star' : 'star-o'"
+        @click="onCollect"
+      />
+      <van-icon
+        color="#e5645f"
+        :name="articleDetails.attitude === 1 ? 'good-job' : 'good-job-o'"
+        @click="onLikes"
+      />
       <van-icon class="share-icon" name="share" />
     </div>
-
   </div>
 </template>
 
 <script>
-import { getArticleDetails,
+import {
+  getArticleDetails,
   articleCollect,
-  cancelArticleCollect
+  cancelArticleCollect,
+  articleLiking,
+  cancelArticleLiking
 } from '@/api/article'
+import {
+  followings,
+  cancelFollowings
+} from '@/api/user-login'
 export default {
   name: 'articlePage',
   props: {
@@ -62,6 +84,7 @@ export default {
   },
   data () {
     return {
+      isFollowLoading: false, // 关注加载状态
       loading: true, // 加载状态
       articleDetails: {}, // 文章详情内容
       defaultImg: require('./no-network.png')
@@ -77,23 +100,62 @@ export default {
       this.loading = false
     },
     // 文章点赞
-    onLikes () {
-
+    async onLikes () {
+      this.$toast.loading({
+        duration: 0, // 持续展示
+        message: '操作中...',
+        forbidClick: true // 是否禁用背景点击
+      })
+      try {
+        if (this.articleDetails.attitude === 1) {
+          await cancelArticleLiking(this.articleId)
+          this.articleDetails.attitude = -1
+          this.$toast.success('取消点赞')
+        } else {
+          await articleLiking(this.articleId)
+          this.articleDetails.attitude = 1
+          this.$toast.success('点赞成功')
+        }
+      } catch (error) {
+        this.$toast.fail('操作失败')
+      }
     },
     // 文章收藏
-    onCollect () {
+    async onCollect () {
+      // 操作中显示loading
+      this.$toast.loading({
+        duration: 0, // 持续展示
+        message: '操作中...',
+        forbidClick: true // 是否禁用背景点击
+      })
       try {
         if (this.articleDetails.is_collected) {
-          cancelArticleCollect(this.articleId)
+          await cancelArticleCollect(this.articleId)
           this.articleDetails.is_collected = false
+          this.$toast.success('取消收藏')
         } else {
-          articleCollect(this.articleId)
+          await articleCollect(this.articleId)
           this.articleDetails.is_collected = true
           this.$toast.success('收藏成功')
         }
       } catch (error) {
         this.$toast.fail('操作失败')
       }
+    },
+    // 用户关注
+    async onFollow () {
+      this.isFollowLoading = true
+      try {
+        if (this.articleDetails.is_followed) {
+          await cancelFollowings(this.articleDetails.aut_id)
+        } else {
+          await followings(this.articleDetails.aut_id)
+        }
+        this.articleDetails.is_followed = !this.articleDetails.is_followed
+      } catch (error) {
+        this.$toast.fail('操作失败')
+      }
+      this.isFollowLoading = false
     }
   },
   created () {

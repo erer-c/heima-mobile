@@ -30,6 +30,7 @@
 import { login, sendSms } from '@/api/user-login'
 import { validate } from 'vee-validate'
 export default {
+  name: 'loginPage',
   data () {
     return {
       user: {

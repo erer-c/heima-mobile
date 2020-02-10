@@ -19,15 +19,16 @@ export const articleLiking = articleId => {
   return request({
     method: 'post',
     url: '/app/v1_0/article/likings',
-    target: articleId
+    data: {
+      target: articleId
+    }
   })
 }
 // 取消文章点赞
 export const cancelArticleLiking = articleId => {
   return request({
-    method: 'post',
-    url: `/app/v1_0/article/likings/${articleId}`,
-    target: articleId
+    method: 'delete',
+    url: `/app/v1_0/article/likings/${articleId}`
   })
 }
 // 文章收藏
@@ -35,7 +36,9 @@ export const articleCollect = articleId => {
   return request({
     method: 'post',
     url: '/app/v1_0/article/collections',
-    target: articleId
+    data: {
+      target: articleId
+    }
   })
 }
 // 取消文章收藏
